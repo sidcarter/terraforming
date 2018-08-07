@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Export existing AWS resources to Terraform style (tf, tfstate)}
   spec.description   = %q{Export existing AWS resources to Terraform style (tf, tfstate)}
-  spec.homepage      = "https://github.com/dtan4/terraforming"
+  spec.homepage      = "https://github.com/sidcarter/terraforming"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }

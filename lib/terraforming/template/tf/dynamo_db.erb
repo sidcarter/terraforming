@@ -14,12 +14,12 @@ resource "aws_dynamodb_table" "<%= table.table_name %>" {
 <% end -%>
 <% if table.stream_specification -%>
     stream_enabled   = <%= table.stream_specification.stream_enabled %>
-    stream_view_type = <%= table.stream_specification.stream_type %>
+    stream_view_type = <%= table.stream_specification.stream_view_type %>
 <% end -%>
 <% Array(table.global_secondary_indexes).each do |index| -%>
     global_secondary_index {
         name               = "<%= index.index_name %>"
-<% table.key_schema.each do |key| -%>
+<% index.key_schema.each do |key| -%>
         <%= key.key_type.downcase %>_key = "<%= key.attribute_name %>"
 <% end -%>
         read_capacity      = <%= index.provisioned_throughput.read_capacity_units %>
