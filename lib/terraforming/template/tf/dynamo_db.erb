@@ -3,19 +3,29 @@ resource "aws_dynamodb_table" "<%= table.table_name %>" {
     name           = "<%= table.table_name %>"
     read_capacity  = <%= table.provisioned_throughput.read_capacity_units %>
     write_capacity = <%= table.provisioned_throughput.write_capacity_units %>
+
 <% table.key_schema.each do |key| -%>
     <%= key.key_type.downcase %>_key = "<%= key.attribute_name %>"
 <% end -%>
+
 <% table.attribute_definitions.each do |attribute| -%>
     attribute {
         name = "<%= attribute.attribute_name %>"
         type = "<%= attribute.attribute_type %>"
     }
 <% end -%>
+
 <% if table.stream_specification -%>
     stream_enabled   = <%= table.stream_specification.stream_enabled %>
-    stream_view_type = <%= table.stream_specification.stream_view_type %>
+    stream_view_type = "<%= table.stream_specification.stream_view_type %>"
 <% end -%>
+
+<% if table.sse_description -%>
+    server_side_encryption {
+        enabled   = <% if table.sse_description.status == "ENABLED" -%>true<% else -%>false<% end -%>
+    }
+<% end -%>
+
 <% Array(table.global_secondary_indexes).each do |index| -%>
     global_secondary_index {
         name               = "<%= index.index_name %>"
@@ -34,8 +44,10 @@ resource "aws_dynamodb_table" "<%= table.table_name %>" {
 <% Array(table.local_secondary_indexes).each do |index| -%>
     local_secondary_index {
         name               = "<%= index.index_name %>"
-<% table.key_schema.each do |key| -%>
+<% index.key_schema.each do |key| -%>
+    <% if key.key_type == "RANGE" -%>
         <%= key.key_type.downcase %>_key = "<%= key.attribute_name %>"
+    <% end -%>
 <% end -%>
         projection_type    = "<%= index.projection.projection_type %>"
 <% keys = index.projection.non_key_attributes -%>
@@ -45,4 +57,5 @@ resource "aws_dynamodb_table" "<%= table.table_name %>" {
     }
 <% end -%>
 }
+
 <% end -%>
