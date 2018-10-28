@@ -14,6 +14,7 @@ require "aws-sdk-s3"
 require "aws-sdk-sns"
 require "aws-sdk-sqs"
 require "aws-sdk-dynamodb"
+require "aws-sdk-lambda"
 
 require "erb"
 require "multi_json"
